@@ -47,6 +47,22 @@ TODO - Confirm button below works in cloud shell:
 
 4. Create a cloud storage bucket 
 
+create bucket and save the name for use later
+
+```sh
+BUCKET_NAME=gs://$GOOGLE_CLOUD_PROJECT-aip-pipeline-cicd
+gsutil mb -l us-central1 $BUCKET_NAME
+```
+
+Now give our compute service account access to this bucket. This will ensure that Vertex Pipelines has the necessary permissions to write files to this bucket. Run the following command to add this permission: 
+
+```sh
+gcloud projects describe $GOOGLE_CLOUD_PROJECT > project-info.txt
+PROJECT_NUM=$(cat project-info.txt | sed -nre 's:.*projectNumber\: (.*):\1:p')
+SVC_ACCOUNT="${PROJECT_NUM//\'/}-compute@developer.gserviceaccount.com"
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAccount:$SVC_ACCOUNT --role roles/storage.objectAdmin
+```
+
 
 6. Create artifact registry 
 
