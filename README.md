@@ -36,15 +36,12 @@ gcloud services enable run.googleapis.com --project $PROJECT_ID
 
 3.  Once the notebook instance is created, clone this repository via the GUI or terminal: 
     ```sh
-    git clone https://github.com/justinjm/<REPO-NAME>
+    git clone https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git
     ```
 
-TODO - Add correct link above and add button below:  
+TODO - Confirm button below works in cloud shell: 
 
-
-https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/justinjm/<REPO-NAME>.git
-
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)]()
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git)
 
 
 
