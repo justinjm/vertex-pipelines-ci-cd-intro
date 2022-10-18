@@ -76,3 +76,13 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 
 
 ## Workflow 
+
+
+## Resources 
+
+* GCP official [Notebook examples](https://cloud.google.com/vertex-ai/docs/pipelines/notebooks)
+* Codelabs:
+  * [Intro to Vertex Pipelines](https://codelabs.developers.google.com/vertex-pipelines-intro)  
+  * [Using Vertex ML Metadata with Pipelines](https://codelabs.developers.google.com/vertex-mlmd-pipelines)  
+* [Schedule pipeline execution with Cloud Scheduler](https://cloud.google.com/vertex-ai/docs/pipelines/schedule-cloud-scheduler)  
+* [Python reference](https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform)
