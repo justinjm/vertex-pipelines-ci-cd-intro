@@ -66,7 +66,13 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 
 6. Create artifact registry 
 
+```sh 
+! gcloud artifacts repositories create $PRIVATE_REPO --repository-format=docker \
+    --location=$REGION \
+    --description="Docker repository"
 
+! gcloud artifacts repositories list
+```
 
 7. Setup GitHub Build trigger 
 
@@ -78,6 +84,10 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 ## Workflow 
 
 
+
+
+
+
 ## Resources 
 
 * GCP official [Notebook examples](https://cloud.google.com/vertex-ai/docs/pipelines/notebooks)
@@ -86,3 +96,4 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
   * [Using Vertex ML Metadata with Pipelines](https://codelabs.developers.google.com/vertex-mlmd-pipelines)  
 * [Schedule pipeline execution with Cloud Scheduler](https://cloud.google.com/vertex-ai/docs/pipelines/schedule-cloud-scheduler)  
 * [Python reference](https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform)
+* [vertex-ai-labs/vertex\_ai\_pipelines\_r\_model.ipynb at main · RajeshThallam/vertex-ai-labs](https://github.com/RajeshThallam/vertex-ai-labs/blob/main/06-vertex-train-deploy-r-model/vertex_ai_pipelines_r_model.ipynb) - example with R 
