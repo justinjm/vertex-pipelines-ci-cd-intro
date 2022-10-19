@@ -39,7 +39,8 @@ gcloud services enable run.googleapis.com --project $PROJECT_ID
     git clone https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git
     ```
 
-**Optional** You can also work from the Cloud Shell and click the button below to clone and open this repository in your own Cloud Shell instance: 
+**Optional** You can also work from the Cloud Shell and click the button below to clone and open this repository in your own Cloud Shell instance:  
+
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git)
 
 4. Create a cloud storage bucket 
@@ -76,11 +77,18 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 [Building repositories from GitHub  |  Cloud Build Documentation  |  Google Cloud](https://cloud.google.com/build/docs/automating-builds/github/build-repos-from-github)
 
 
+### Constants 
 
+```
+PROJECT_ID= 
+REGION= 
+BUCKET_NAME= 
+PRIVATE_REPO= 
+```
 
 ## Workflow 
 
-
+TODO
 
 
 
