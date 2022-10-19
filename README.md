@@ -64,28 +64,7 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 
 6. Create artifact registry 
 
-```sh 
-gcloud artifacts repositories create automl-beans --repository-format=docker \
-  --location=us-central1 \
-  --description="Docker repository"
-
-```
-
-list repositories to confirm 
-
-```sh 
-gcloud artifacts repositories list
-```
-
-TODO - @justinjm:  add chunk to notebook in proper place
-
-""""
-Finally, authenticate for pushing / pulling container images 
-
-```sh
-# gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-```
-""" 
+See notebook `02_build_image.ipynb`
 
 7. Setup GitHub Build trigger 
 
