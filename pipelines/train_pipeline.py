@@ -66,7 +66,7 @@ class pipeline_controller():
                 project=project,
                 display_name=display_name,
                 optimization_prediction_type="classification",
-                budget_milli_node_hours=100,
+                budget_milli_node_hours=1000,
                 column_transformations=[
                     {"numeric": {"column_name": "Area"}},
                     {"numeric": {"column_name": "Perimeter"}},
