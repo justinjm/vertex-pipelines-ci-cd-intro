@@ -65,12 +65,27 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 6. Create artifact registry 
 
 ```sh 
-! gcloud artifacts repositories create $PRIVATE_REPO --repository-format=docker \
-    --location=$REGION \
-    --description="Docker repository"
+gcloud artifacts repositories create automl-beans --repository-format=docker \
+  --location=us-central1 \
+  --description="Docker repository"
 
-! gcloud artifacts repositories list
 ```
+
+list repositories to confirm 
+
+```sh 
+gcloud artifacts repositories list
+```
+
+TODO - @justinjm:  add chunk to notebook in proper place
+
+""""
+Finally, authenticate for pushing / pulling container images 
+
+```sh
+# gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+```
+""" 
 
 7. Setup GitHub Build trigger 
 
@@ -80,10 +95,10 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 ### Constants 
 
 ```
-PROJECT_ID= 
-REGION= 
-BUCKET_NAME= 
-PRIVATE_REPO= 
+PROJECT_ID = "demos-vertex-ai" 
+REGION = "us-central1"
+BUCKET_NAME = ""
+PRIVATE_REPO = "automl-beans" 
 ```
 
 ## Workflow 

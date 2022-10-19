@@ -1,0 +1,27 @@
+name: Classification model eval metrics
+inputs:
+- {name: project, type: String}
+- {name: location, type: String}
+- {name: api_endpoint, type: String}
+- {name: thresholds_dict_str, type: String}
+- {name: model, type: Artifact}
+outputs:
+- {name: metrics, type: Metrics}
+- {name: metricsc, type: ClassificationMetrics}
+- {name: dep_decision, type: String}
+implementation:
+  container:
+    image: us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/latest
+    command: [python, /components/classification_eval_model_v2.py]
+    args: [
+      --executor_input, {executorInput: null},
+      --function_to_execute, main,       ##Name of Python function in the package PY file to execute
+      --project, {inputValue: project},
+      --location, {inputValue: location},
+      --api_endpoint, {inputValue: api_endpoint},
+      --thresholds_dict_str, {inputValue: thresholds_dict_str},
+      --model, {inputPath: model},       ##Artifacts / Metrics ( complex things ) will always map to inputPath
+      --metrics, {outputPath: metrics},  ##Outputs will always map to outputPath
+      --metricsc, {outputPath: metricsc},
+      --dep_decision, {outputPath: dep_decision}
+    ]
