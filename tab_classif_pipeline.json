@@ -417,7 +417,7 @@
               "python",
               "/components/classification_eval_model_v2.py"
             ],
-            "image": "us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/automl-beans/latest"
+            "image": "us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/automl-beans:latest"
           }
         },
         "exec-endpoint-create": {
