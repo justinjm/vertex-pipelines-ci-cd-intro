@@ -157,14 +157,14 @@ General workflow is as follows:
     * `README.md` (this document) 
     * `00_setup.ipynb`  
 2. write code to train and deploy pipeline 
-    * `01_pipeline_build.ipynb` --> `pipelines/train_pipeline.py`
+    * `01_pipeline_build.ipynb` code here and generates file  `pipelines/train_pipeline.py` to be used in pipeline
     * `build_and_deploy.py` 
     * `components/classification_eval_model_v2.py`
     * `component_specs/classification_eval_model_v2.yaml`
-3. manually run pipeline to test 
-    * `03_pipeline_run.ipynb`
-4. create Dockerfile and build image (to containerize for CI/CD)
+3. create Dockerfile and build image (to containerize for CI/CD)
     * `02_image_build.ipynb`
+4. manually run pipeline to test 
+    * `03_pipeline_run.ipynb`
 5. commit/push code to the linked repository 
 6. Pipeline job submitted to Vertex AI
 
