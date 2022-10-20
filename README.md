@@ -105,6 +105,23 @@ gcloud beta builds triggers create github \
     --include-logs-with-status
 ```
 
+
+8. Add permissions to vertex AI service agents 
+
+
+Grant vertex ai service agent access 
+
+
+Resources 
+
+* [Configure your Google Cloud project for Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/configure-project#service-account)
+* [Use a custom service account  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/custom-service-account)
+* [IAM permissions  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/iam-permissions)
+* [Access control with IAM  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/access-control#predefined-roles)
+* [Troubleshooting Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/troubleshooting#custom-trained_models)
+
+
+
 ### Constants 
 
 ```
