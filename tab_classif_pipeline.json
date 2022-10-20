@@ -361,7 +361,7 @@
               "--init.optimization_prediction_type",
               "classification",
               "--method.budget_milli_node_hours",
-              "100",
+              "1000",
               "--method.target_column",
               "Class",
               "--executor_input",
