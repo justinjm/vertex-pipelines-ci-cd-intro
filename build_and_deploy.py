@@ -23,5 +23,6 @@ pipe = pipeline_controller(template_path="tab_classif_pipeline.json",
 #Build and Compile pipeline
 pipe._build_compile_pipeline()
 
-# #Submit Job
+#Submit Job
 pipe._submit_job()
+# TODO: add `service_account` parameter - https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform.PipelineJob#google_cloud_aiplatform_PipelineJob_submit
