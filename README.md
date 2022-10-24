@@ -206,15 +206,23 @@ gcloud projects add-iam-policy-binding demos-vertex-ai \
     --role="roles/aiplatform.user"
 ```
 
-
 Grant newly created service account access to any Google Cloud resources that you use in your pipelines:
+
+Service agent 
 
 ```sh
 gcloud projects add-iam-policy-binding demos-vertex-ai \
     --member="serviceAccount:vertex-ai-pipelines@demos-vertex-ai.iam.gserviceaccount.com" \
-    --role="ROLE_NAME"
+    --role="roles/aiplatform.serviceAgent"
 ```
 
+Custom code service agent
+
+```sh
+gcloud projects add-iam-policy-binding demos-vertex-ai \
+    --member="serviceAccount:vertex-ai-pipelines@demos-vertex-ai.iam.gserviceaccount.com" \
+    --role="roles/aiplatform.customCodeServiceAgent"
+```
 
 Grant your user account the roles/iam.serviceAccountUser role for your newly created service account: 
 
@@ -225,8 +233,6 @@ gcloud iam service-accounts add-iam-policy-binding \
     --member="user:bruce@justinjm.altostrat.com" \
     --role="roles/iam.serviceAccountUser"
 ```
-
-
 
 Grant access to cloud storage bucket 
 
@@ -241,3 +247,5 @@ gsutil iam ch \
 serviceAccount:vertex-ai-pipelines@demos-vertex-ai.iam.gserviceaccount.com:roles/storage.objectCreator,objectViewer \
 $BUCKET_NAME
 ```  
+
+
