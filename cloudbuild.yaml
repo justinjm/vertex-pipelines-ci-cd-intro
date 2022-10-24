@@ -4,7 +4,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   id: 'build_image'
   args: [
-    'build', '-t', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/automl-beans:latest',
+    'build', '-t', '$LOCATION-docker.pkg.dev/$PROJECT_ID/automl-beans/automl-beans:latest',
     '-f', 'Dockerfile', '.',
   ]
 
@@ -14,11 +14,11 @@ steps:
   waitFor:
     - 'build_image'
   args: [
-    'push', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/automl-beans:latest'
+    'push', '$LOCATION-docker.pkg.dev/$PROJECT_ID/automl-beans/automl-beans:latest'
   ]
 
 ##Step 3 -> Deploy pipeline to Vertex AI( using above built image )
-- name: '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/automl-beans:latest'
+- name: '$LOCATION-docker.pkg.dev/$PROJECT_ID/automl-beans/automl-beans:latest'
   id: 'deploy_pipelines'
   waitFor:
     - 'push_image'
