@@ -35,7 +35,7 @@ class pipeline_controller():
             template_path=self.template_path,
             pipeline_root=self.pipeline_root,
             parameter_values={"project": self.project_id, "display_name": self.display_name},
-            enable_caching=False
+            enable_caching=True
         )
 
         #And finally, run the job:
