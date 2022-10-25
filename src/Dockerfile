@@ -6,3 +6,6 @@ RUN pip install -r requirements.txt
 
 # Copy downloaded dependencies
 COPY . .
+
+# Update python path.
+ENV PATH=/root/.local:$PATH
