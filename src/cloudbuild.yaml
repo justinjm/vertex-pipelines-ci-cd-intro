@@ -5,8 +5,9 @@ steps:
   id: 'build_image'
   args: [
     'build', '-t', 'us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/automl-beans:latest',
-    '-f', 'src/Dockerfile', './src',
+    '-f', 'Dockerfile', '.',
   ]
+  dir: 'src'
 
 ##Step 2 -> Deploy image to Artifact Repository
 - name: 'gcr.io/cloud-builders/docker'
