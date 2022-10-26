@@ -42,4 +42,4 @@ steps:
   args:
     - -c
     - |
-      python -m build_and_deploy
+      python3 -m build_and_deploy
