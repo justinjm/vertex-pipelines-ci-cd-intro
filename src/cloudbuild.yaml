@@ -27,10 +27,12 @@ steps:
   args:
     - "-c"
     - |
+        pwd
         ls -la
         gcloud version
         which python
         which python3
+
 
 ##Step 3 -> Deploy pipeline to Vertex AI( using above built image )
 - name: 'us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/automl-beans:latest'
