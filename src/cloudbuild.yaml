@@ -1,6 +1,6 @@
 # Create config file and build a new image tagged with the given commit hash
 steps:
-##Step 1 -> Build main image
+##Step 0 -> Build main image
 - name: 'gcr.io/cloud-builders/docker'
   id: 'build_image'
   args: [
@@ -9,7 +9,7 @@ steps:
   ]
   dir: 'src'
 
-##Step 2 -> Deploy image to Artifact Repository
+##Step 1 -> Deploy image to Artifact Repository
 - name: 'gcr.io/cloud-builders/docker'
   id: 'push_image'
   waitFor:
@@ -18,11 +18,26 @@ steps:
     'push', 'us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/automl-beans:latest'
   ]
 
+##Step 2 -> log image info for debugging 
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'log_image_info'
+  waitFor:
+    - 'push_image'
+  entrypoint: "bash"
+  args:
+    - "-c"
+    - |
+        ls -la
+        gcloud version
+        which python
+        which python3
+        pip freeze 
+
 ##Step 3 -> Deploy pipeline to Vertex AI( using above built image )
 - name: 'us-central1-docker.pkg.dev/demos-vertex-ai/automl-beans/automl-beans:latest'
   id: 'deploy_pipelines'
   waitFor:
-    - 'push_image'
+    - 'log_image_info'
   entrypoint: /bin/bash
   args:
     - -c
