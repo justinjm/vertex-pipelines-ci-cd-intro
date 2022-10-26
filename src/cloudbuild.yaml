@@ -43,5 +43,5 @@ steps:
   args:
     - -c
     - |
-      cd src/
       python -m build_and_deploy
+  dir: 'src'
