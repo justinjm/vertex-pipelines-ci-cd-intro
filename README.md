@@ -42,10 +42,13 @@ gcloud services enable run.googleapis.com --project $PROJECT_ID
     ```sh
     git clone https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git
     ```
-
 **Optional** You can also work from the Cloud Shell and click the button below to clone and open this repository in your own Cloud Shell instance:  
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git)
+
+3.a Complete workbench notebook instance setup by installing dependencies and restarting kernel
+
+See notebook `00_setup.ipynb` 
 
 ### Create Cloud Storage Bucket
 
@@ -71,14 +74,13 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 
 6. Create artifact registry 
 
-See notebook `02_build_image.ipynb`
+See notebook `02_image_build.ipynb`
 
 ### 7. Setup Cloud Build Trigger
 
 7.a. Create cloudbuild.yaml 
 
-See `cloudbuild.yaml` for pre-built one, update with your constants as needed 
-TODO - use subsitution vars https://cloud.google.com/build/docs/configuring-builds/substitute-variable-values
+See `cloudbuild.yaml` for pre-built one, update with your constants as needed
 
 7.b Setup GitHub Build trigger 
 
@@ -141,7 +143,6 @@ PROJECT_NUM=$(cat project-info.txt | sed -nre 's:.*projectNumber\: (.*):\1:p')
 SVC_ACCOUNT="${PROJECT_NUM//\'/}@cloudbuild.gserviceaccount.com"
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAccount:$SVC_ACCOUNT --role roles/aiplatform.serviceAgent
 ```
-
 #### Resources 
 
 * [IAM permissions  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/iam-permissions)
@@ -154,20 +155,20 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAcc
 General workflow is as follows: 
 
 1. Setup GCP environment: 
-    * `README.md` (this document) 
-    * `00_setup.ipynb`  
+    * `README.md` (this document) - setup GCP environment
+    * `00_setup.ipynb`  - setup notebook instabce
+    * `02_image_build.ipynb` - create artifact registry 
 2. write code to train and deploy pipeline 
     * `01_pipeline_build.ipynb` code here and generates file  `pipelines/train_pipeline.py` to be used in pipeline
-    * `build_and_deploy.py` 
-    * `components/classification_eval_model_v2.py`
-    * `component_specs/classification_eval_model_v2.yaml`
+    * `build_and_deploy.py` - main function for building and deploying Vertex Pipeline
+    * `components/classification_eval_model_v2.py` - custom component for model evaluation 
+    * `component_specs/classification_eval_model_v2.yaml` - create based on `components/classification_eval_model_v2.py`
 3. create Dockerfile and build image (to containerize for CI/CD)
     * `02_image_build.ipynb`
 4. manually run pipeline to test 
     * `03_pipeline_run.ipynb`
 5. commit/push code to the linked repository 
 6. Pipeline job submitted to Vertex AI
-
 
 ## Resources 
 
@@ -184,3 +185,5 @@ General workflow is as follows:
 
 * [Configure your Google Cloud project for Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/configure-project#service-account)
 * [Use a custom service account  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/custom-service-account)
+
+TODO - add documentation and code for using dedicated service account per Google best practices
