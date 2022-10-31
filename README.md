@@ -26,19 +26,21 @@ gcloud services enable run.googleapis.com --project $PROJECT_ID
 ### Create Workbench Notebook Instance
 
 2.  Navigate to [Vertex Workbench User Managed Notebooks](https://console.cloud.google.com/ai-platform/notebooks) and create a python notebook instance (or use the cloud shell command below)
-    1.  At the top of the screen, click "NEW NOTEBOOK"
-    2.  Use the first option for a notebook "Python 3"
-    3.  For the Region, select the first option "us-central1" 
-    4.  Click "Create"
+    2.1.  At the top of the screen, click "NEW NOTEBOOK"
+    2.2.  Use the first option for a notebook "Python 3"
+    2.3.  For the Region, select the first option "us-central1" 
+    2.4.  Click "Create"
     ```sh
     gcloud notebooks instances create vertex-ai-pipelines-cicd-intro \
         --vm-image-project=deeplearning-platform-release \
         --vm-image-family=common-cpu-notebooks \
         --machine-type=n1-standard-4 \
-        --location=us-central1-a \
-        --post-startup-script=https://raw.githubusercontent.com/justinjm/vertex-pipelines-ci-cd-intro/main/notebook_startup.sh
+        --location=us-central1-a
     ```
-
+3.  Once the notebook instance is created, clone this repository via the GUI or terminal: 
+    ```sh
+    git clone https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git
+    ```
 **Optional** You can also work from the [Cloud Shell Editor](https://cloud.google.com/shell/docs/editor-overview) and click the button below to clone and open this repository in your own Cloud Shell instance:  
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/justinjm/vertex-pipelines-ci-cd-intro.git)
@@ -85,7 +87,9 @@ Setup a Cloud Build trigger to execute the vertex pipeline execution whenever a 
 
 First, [Connect to a GitHub repository](https://cloud.google.com/build/docs/automating-builds/github/connect-repo-github)
 
-Then, setup a cloud build trigger from the connected GitHub repo via the Google Cloud Console: [Building repositories from GitHub  |  Cloud Build Documentation  |  Google Cloud](https://cloud.google.com/build/docs/automating-builds/github/build-repos-from-github)
+Then, setup a cloud build trigger from the connected GitHub repo 
+
+[Building repositories from GitHub  |  Cloud Build Documentation  |  Google Cloud](https://cloud.google.com/build/docs/automating-builds/github/build-repos-from-github)
 
 Console:
 
