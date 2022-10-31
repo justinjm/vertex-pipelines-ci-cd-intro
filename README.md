@@ -88,9 +88,7 @@ Setup a Cloud Build trigger to execute the vertex pipeline execution whenever a 
 
 First, [Connect to a GitHub repository](https://cloud.google.com/build/docs/automating-builds/github/connect-repo-github)
 
-Then, setup a cloud build trigger from the connected GitHub repo 
-
-[Building repositories from GitHub  |  Cloud Build Documentation  |  Google Cloud](https://cloud.google.com/build/docs/automating-builds/github/build-repos-from-github)
+Then, setup a cloud build trigger from the connected GitHub repo via the Google Cloud Console: [Building repositories from GitHub  |  Cloud Build Documentation  |  Google Cloud](https://cloud.google.com/build/docs/automating-builds/github/build-repos-from-github)
 
 Console:
 
@@ -102,18 +100,6 @@ Console:
     * repository: select repository from dropdown
     * branch: `^main$`
 * Configuration: Autodetected 
-
-
-gcloud: 
-
-```sh
-gcloud beta builds triggers create github \
-    --repo-name=REPO_NAME \
-    --repo-owner=REPO_OWNER \
-    --branch-pattern=BRANCH_PATTERN \ # or --tag-pattern=TAG_PATTERN
-    --build-config=BUILD_CONFIG_FILE \
-    --include-logs-with-status
-```
 
 ### Grant Vertex AI access to Cloud Build 
 
