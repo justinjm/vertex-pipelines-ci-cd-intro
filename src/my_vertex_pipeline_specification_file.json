@@ -1,0 +1,413 @@
+{
+  "pipelineSpec": {
+    "components": {
+      "comp-deploy-model": {
+        "executorLabel": "exec-deploy-model",
+        "inputDefinitions": {
+          "artifacts": {
+            "model": {
+              "artifactType": {
+                "schemaTitle": "system.Model",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "project": {
+              "type": "STRING"
+            },
+            "region": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "vertex_endpoint": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "vertex_model": {
+              "artifactType": {
+                "schemaTitle": "system.Model",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-exit-handler-1": {
+        "dag": {
+          "outputs": {
+            "artifacts": {
+              "sklearn-train-metrics": {
+                "artifactSelectors": [
+                  {
+                    "outputArtifactKey": "metrics",
+                    "producerSubtask": "sklearn-train"
+                  }
+                ]
+              }
+            }
+          },
+          "tasks": {
+            "deploy-model": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-deploy-model"
+              },
+              "dependentTasks": [
+                "sklearn-train"
+              ],
+              "inputs": {
+                "artifacts": {
+                  "model": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "model",
+                      "producerTask": "sklearn-train"
+                    }
+                  }
+                },
+                "parameters": {
+                  "project": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "your-project-id"
+                      }
+                    }
+                  },
+                  "region": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "us-central1"
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "deploy-model"
+              }
+            },
+            "get-dataframe": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-get-dataframe"
+              },
+              "inputs": {
+                "parameters": {
+                  "bq_table": {
+                    "componentInputParameter": "pipelineparam--bq_table"
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "get-dataframe"
+              }
+            },
+            "sklearn-train": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-sklearn-train"
+              },
+              "dependentTasks": [
+                "get-dataframe"
+              ],
+              "inputs": {
+                "artifacts": {
+                  "dataset": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "output_data_path",
+                      "producerTask": "get-dataframe"
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "sklearn-train"
+              }
+            }
+          }
+        },
+        "inputDefinitions": {
+          "parameters": {
+            "pipelineparam--bq_table": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "sklearn-train-metrics": {
+              "artifactType": {
+                "schemaTitle": "system.Metrics",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-get-dataframe": {
+        "executorLabel": "exec-get-dataframe",
+        "inputDefinitions": {
+          "parameters": {
+            "bq_table": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "output_data_path": {
+              "artifactType": {
+                "schemaTitle": "system.Dataset",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-sklearn-train": {
+        "executorLabel": "exec-sklearn-train",
+        "inputDefinitions": {
+          "artifacts": {
+            "dataset": {
+              "artifactType": {
+                "schemaTitle": "system.Dataset",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "metrics": {
+              "artifactType": {
+                "schemaTitle": "system.Metrics",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "model": {
+              "artifactType": {
+                "schemaTitle": "system.Model",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-vertex-pipelines-notification-email": {
+        "executorLabel": "exec-vertex-pipelines-notification-email",
+        "inputDefinitions": {
+          "parameters": {
+            "pipeline_task_final_status": {
+              "type": "STRING"
+            },
+            "recipients": {
+              "type": "STRING"
+            }
+          }
+        }
+      }
+    },
+    "deploymentSpec": {
+      "executors": {
+        "exec-deploy-model": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "deploy_model"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'google-cloud-aiplatform' 'kfp==1.8.14' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef deploy_model(\n    model: Input[Model],\n    project: str,\n    region: str,\n    vertex_endpoint: Output[Artifact],\n    vertex_model: Output[Model]\n):\n    from google.cloud import aiplatform\n\n    aiplatform.init(project=project, location=region)\n\n    deployed_model = aiplatform.Model.upload(\n        display_name=\"my-model-pipeline\"\n        , artifact_uri = model.uri.replace(\"model.pkl\", \"\")\n        , serving_container_image_uri=\"us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.0-24:latest\"\n    )\n    endpoint = deployed_model.deploy(machine_type=\"n1-standard-4\")\n\n    # Save data to the output params\n    vertex_endpoint.uri = endpoint.resource_name\n    vertex_model.uri = deployed_model.resource_name\n\n"
+            ],
+            "image": "python:3.9"
+          }
+        },
+        "exec-get-dataframe": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "get_dataframe"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'google-cloud-bigquery' 'pandas' 'pyarrow' 'db-dtypes' 'kfp==1.8.14' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef get_dataframe(\n    bq_table: str,\n    output_data_path: OutputPath(\"Dataset\")\n):\n    from google.cloud import bigquery\n    import pandas as pd\n    import os\n\n    project_number = os.environ[\"CLOUD_ML_PROJECT_ID\"]\n    bqclient = bigquery.Client(project=project_number)\n    table = bigquery.TableReference.from_string(\n        bq_table\n    )\n    rows = bqclient.list_rows(\n        table\n    )\n    dataframe = rows.to_dataframe(\n        create_bqstorage_client=True,\n    )\n    dataframe = dataframe.sample(frac=1, random_state=2)\n    dataframe.to_csv(output_data_path)\n\n"
+            ],
+            "image": "python:3.9"
+          }
+        },
+        "exec-sklearn-train": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "sklearn_train"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'sklearn' 'pandas' 'numpy' 'db-dtypes' 'kfp==1.8.14' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef sklearn_train(\n    dataset: Input[Dataset],\n    metrics: Output[Metrics],\n    model: Output[Model]\n):\n    from numpy import mean, std\n    from sklearn.metrics import roc_curve\n\n    from sklearn.ensemble import GradientBoostingClassifier\n    from sklearn.model_selection import cross_val_score\n    from sklearn.model_selection import RepeatedStratifiedKFold\n\n    import pickle\n\n    import pandas as pd\n    df = pd.read_csv(dataset.path)\n    labels = df.pop(\"label\").tolist()\n    data = df.values.tolist()\n\n    # cross validation\n    skmodel = GradientBoostingClassifier()\n    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)\n    n_scores = cross_val_score(skmodel, data, labels, scoring='accuracy', cv=cv, n_jobs=-1, error_score='raise')\n\n    # log cv metrics\n    metrics.log_metric(\"framework\", \"Scikit Learn\")\n    metrics.log_metric(\"dataset_size\", len(df))\n    metrics.log_metric(\"CV_accuracy_mean\", mean(n_scores))\n    metrics.log_metric(\"CV_accuracy_stdev\", std(n_scores))\n\n    # fit the model on the whole dataset\n    skmodel = GradientBoostingClassifier()\n    skmodel.fit(data, labels)\n\n    #dump(skmodel, model.path + \".joblib\")\n    with open(model.path + \".pkl\", 'wb') as model_file:\n        pickle.dump(skmodel, model_file)\n    model.uri = model.uri  + \".pkl\"\n\n"
+            ],
+            "image": "python:3.9"
+          }
+        },
+        "exec-vertex-pipelines-notification-email": {
+          "container": {
+            "args": [
+              "--type",
+              "VertexNotificationEmail",
+              "--payload",
+              ""
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.experimental.vertex_notification_email.executor"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.26"
+          }
+        }
+      }
+    },
+    "pipelineInfo": {
+      "name": "deployed-model"
+    },
+    "root": {
+      "dag": {
+        "outputs": {
+          "artifacts": {
+            "sklearn-train-metrics": {
+              "artifactSelectors": [
+                {
+                  "outputArtifactKey": "sklearn-train-metrics",
+                  "producerSubtask": "exit-handler-1"
+                }
+              ]
+            }
+          }
+        },
+        "tasks": {
+          "exit-handler-1": {
+            "componentRef": {
+              "name": "comp-exit-handler-1"
+            },
+            "inputs": {
+              "parameters": {
+                "pipelineparam--bq_table": {
+                  "componentInputParameter": "bq_table"
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "exit-handler-1"
+            }
+          },
+          "vertex-pipelines-notification-email": {
+            "componentRef": {
+              "name": "comp-vertex-pipelines-notification-email"
+            },
+            "dependentTasks": [
+              "exit-handler-1"
+            ],
+            "inputs": {
+              "parameters": {
+                "pipeline_task_final_status": {
+                  "taskFinalStatus": {
+                    "producerTask": "exit-handler-1"
+                  }
+                },
+                "recipients": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "[\"your-email@your-domain.com\"]"
+                    }
+                  }
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "vertex-pipelines-notification-email"
+            },
+            "triggerPolicy": {
+              "strategy": "ALL_UPSTREAM_TASKS_COMPLETED"
+            }
+          }
+        }
+      },
+      "inputDefinitions": {
+        "parameters": {
+          "bq_table": {
+            "type": "STRING"
+          },
+          "output_data_path": {
+            "type": "STRING"
+          },
+          "project_id": {
+            "type": "STRING"
+          },
+          "region": {
+            "type": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "sklearn-train-metrics": {
+            "artifactType": {
+              "schemaTitle": "system.Metrics",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        }
+      }
+    },
+    "schemaVersion": "2.0.0",
+    "sdkVersion": "kfp-1.8.14"
+  },
+  "runtimeConfig": {
+    "parameters": {
+      "bq_table": {
+        "stringValue": ""
+      },
+      "output_data_path": {
+        "stringValue": "data.csv"
+      },
+      "project_id": {
+        "stringValue": "your-project-id"
+      },
+      "region": {
+        "stringValue": "us-central1"
+      }
+    }
+  }
+}

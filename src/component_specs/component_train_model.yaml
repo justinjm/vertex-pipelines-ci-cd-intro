@@ -1,0 +1,76 @@
+name: Sklearn train
+inputs:
+- {name: dataset, type: Dataset}
+outputs:
+- {name: metrics, type: Metrics}
+- {name: model, type: Model}
+implementation:
+  container:
+    image: python:3.9
+    command:
+    - sh
+    - -c
+    - |2
+
+      if ! [ -x "$(command -v pip)" ]; then
+          python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip
+      fi
+
+      PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'sklearn' 'pandas' 'numpy' 'db-dtypes' 'kfp==1.8.14' && "$0" "$@"
+    - sh
+    - -ec
+    - |
+      program_path=$(mktemp -d)
+      printf "%s" "$0" > "$program_path/ephemeral_component.py"
+      python3 -m kfp.v2.components.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+    - |2+
+
+      import kfp
+      from kfp.v2 import dsl
+      from kfp.v2.dsl import *
+      from typing import *
+
+      def sklearn_train(
+          dataset: Input[Dataset],
+          metrics: Output[Metrics],
+          model: Output[Model]
+      ):
+          from numpy import mean, std
+          from sklearn.metrics import roc_curve
+
+          from sklearn.ensemble import GradientBoostingClassifier
+          from sklearn.model_selection import cross_val_score
+          from sklearn.model_selection import RepeatedStratifiedKFold
+
+          import pickle
+
+          import pandas as pd
+          df = pd.read_csv(dataset.path)
+          labels = df.pop("label").tolist()
+          data = df.values.tolist()
+
+          # cross validation
+          skmodel = GradientBoostingClassifier()
+          cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
+          n_scores = cross_val_score(skmodel, data, labels, scoring='accuracy', cv=cv, n_jobs=-1, error_score='raise')
+
+          # log cv metrics
+          metrics.log_metric("framework", "Scikit Learn")
+          metrics.log_metric("dataset_size", len(df))
+          metrics.log_metric("CV_accuracy_mean", mean(n_scores))
+          metrics.log_metric("CV_accuracy_stdev", std(n_scores))
+
+          # fit the model on the whole dataset
+          skmodel = GradientBoostingClassifier()
+          skmodel.fit(data, labels)
+
+          #dump(skmodel, model.path + ".joblib")
+          with open(model.path + ".pkl", 'wb') as model_file:
+              pickle.dump(skmodel, model_file)
+          model.uri = model.uri  + ".pkl"
+
+    args:
+    - --executor_input
+    - {executorInput: null}
+    - --function_to_execute
+    - sklearn_train
