@@ -135,8 +135,6 @@ Console:
 
 gcloud: 
 
-TODO - confirm below command works 
-
 ```sh
 gcloud projects describe $GOOGLE_CLOUD_PROJECT > project-info.txt
 PROJECT_NUM=$(cat project-info.txt | sed -nre 's:.*projectNumber\: (.*):\1:p')
@@ -179,11 +177,6 @@ General workflow is as follows:
 * [Schedule pipeline execution with Cloud Scheduler](https://cloud.google.com/vertex-ai/docs/pipelines/schedule-cloud-scheduler)  
 * [Python reference](https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform)
 * [vertex-ai-labs/vertex\_ai\_pipelines\_r\_model.ipynb at main · RajeshThallam/vertex-ai-labs](https://github.com/RajeshThallam/vertex-ai-labs/blob/main/06-vertex-train-deploy-r-model/vertex_ai_pipelines_r_model.ipynb) - example with R 
-
-
-### Vertex Pipelines Setup 
-
-* [Configure your Google Cloud project for Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/configure-project#service-account)
-* [Use a custom service account  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/custom-service-account)
-
-TODO - add documentation and code for using dedicated service account per Google best practices
+* Vertex Pipelines Setup 
+  * [Configure your Google Cloud project for Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/configure-project#service-account)
+  * [Use a custom service account  |  Vertex AI  |  Google Cloud](https://cloud.google.com/vertex-ai/docs/general/custom-service-account)
