@@ -159,10 +159,10 @@ General workflow is as follows:
     * `00_setup.ipynb`  - setup notebook instabce
     * `02_image_build.ipynb` - create artifact registry 
 2. write code to train and deploy pipeline 
-    * `01_pipeline_build.ipynb` code here and generates file  `pipelines/train_pipeline.py` to be used in pipeline
-    * `build_and_deploy.py` - main function for building and deploying Vertex Pipeline
-    * `components/classification_eval_model_v2.py` - custom component for model evaluation 
-    * `component_specs/classification_eval_model_v2.yaml` - create based on `components/classification_eval_model_v2.py`
+    * `01_pipeline_build.ipynb` code here and generates file  `src/pipelines/train_pipeline.py` to be used in pipeline
+    * `src/build_and_deploy.py` - main function for building and deploying Vertex Pipeline
+    * `src/components/classification_eval_model_v2.py` - custom component for model evaluation 
+    * `src/component_specs/classification_eval_model_v2.yaml` - create based on `src/components/classification_eval_model_v2.py`
 3. create Dockerfile and build image (to containerize for CI/CD)
     * `02_image_build.ipynb`
 4. manually run pipeline to test 
