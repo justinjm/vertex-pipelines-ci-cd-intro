@@ -35,7 +35,8 @@ gcloud services enable run.googleapis.com --project $PROJECT_ID
         --vm-image-project=deeplearning-platform-release \
         --vm-image-family=common-cpu-notebooks \
         --machine-type=n1-standard-4 \
-        --location=us-central1-a 
+        --location=us-central1-a \
+        --post-startup-script=https://raw.githubusercontent.com/justinjm/vertex-pipelines-ci-cd-intro/main/notebook_startup.sh
     ```
 
 3.  Once the notebook instance is created, clone this repository via the GUI or terminal: 
