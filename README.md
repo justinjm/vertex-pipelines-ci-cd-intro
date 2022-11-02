@@ -2,6 +2,12 @@
 
 An introduction to CI/CD workflow on Vertex AI through example. 
 
+## Pre-requiste (optional)
+
+This builds upon the official Google codelab: [Intro to Vertex Pipelines](https://codelabs.developers.google.com/vertex-pipelines-intro) by re-using the same code to demonostrate a example [MLOps level 2](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#mlops_level_2_cicd_pipeline_automation) CI/CD pipeline automation workflow.
+
+It is not required and recommended to complete that excercise first so as to become familar with how to run a Vertex Pipeline manually.
+
 ## Setup 
 
 ### Enable APIs 
