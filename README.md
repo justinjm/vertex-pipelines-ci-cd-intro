@@ -73,13 +73,13 @@ gcloud projects describe $GOOGLE_CLOUD_PROJECT > project-info.txt
 PROJECT_NUM=$(cat project-info.txt | sed -nre 's:.*projectNumber\: (.*):\1:p')
 SVC_ACCOUNT="${PROJECT_NUM//\'/}-compute@developer.gserviceaccount.com"
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAccount:$SVC_ACCOUNT --role roles/storage.objectAdmin
-```
+```  
 
-### Create Artifact Registry 
+### 6. Create Artifact Registry  
 
-6. Create artifact registry 
+6.a Create artifact registry
 
-See notebook `02_image_build.ipynb`
+See notebook `02_image_build.ipynb` 
 
 ### 7. Setup Cloud Build Trigger
 
@@ -112,10 +112,10 @@ Console:
 
 8. Grant permissions to vertex AI service agents 
 
-Grant the following roles to the Cloud Build service account `{PROJECT-NUMBER}@cloudbuild.gserviceaccount.com`: 
+Grant the following roles to the Cloud Build service account `{PROJECT-NUMBER}@cloudbuild.gserviceaccount.com`:    
 
-* `Vertex AI Service Agent` (roles/aiplatform.serviceAgent)
-
+* `Vertex AI Service Agent` (roles/aiplatform.serviceAgent)  
+  
 You can do this in the console or via gclound: 
 
 Console: 
@@ -160,6 +160,10 @@ General workflow is as follows:
     * `03_pipeline_run.ipynb`
 5. commit/push code to the linked repository 
 6. Pipeline job submitted to Vertex AI
+
+## Acknowledgement 
+
+Based on original source code by [rafiqhasan/hasantest-vertex-automl](https://github.com/rafiqhasan/hasantest-vertex-automl)
 
 ## Resources 
 
